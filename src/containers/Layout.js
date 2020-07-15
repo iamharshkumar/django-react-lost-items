@@ -1,129 +1,148 @@
 import React from "react";
 import {
-  Container,
-  Divider,
-  Dropdown,
-  Grid,
-  Header,
-  Image,
-  List,
-  Menu,
-  Segment
+    Container,
+    Divider,
+    Dropdown,
+    Grid,
+    Header,
+    Image,
+    List,
+    Menu,
+    Segment
 } from "semantic-ui-react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { logout } from "../store/actions/auth";
+import {Link, withRouter} from "react-router-dom";
+import {connect} from "react-redux";
+import {logout} from "../store/actions/auth";
+import Input from "semantic-ui-react/dist/commonjs/elements/Input";
 
 class CustomLayout extends React.Component {
-  render() {
-    const { authenticated } = this.props;
-    return (
-      <div>
-        <Menu fixed="top" inverted>
-          <Container>
-            <Link to="/">
-              <Menu.Item header>Home</Menu.Item>
-            </Link>
-            {authenticated ? (
-              <Menu.Item header onClick={() => this.props.logout()}>
-                Logout
-              </Menu.Item>
-            ) : (
-              <React.Fragment>
-                <Link to="/login">
-                  <Menu.Item header>Login</Menu.Item>
-                </Link>
-                <Link to="/signup">
-                  <Menu.Item header>Signup</Menu.Item>
-                </Link>
-              </React.Fragment>
-            )}
-          </Container>
-        </Menu>
+    render() {
+        const {authenticated} = this.props;
+        return (
+            <div>
+                <Menu inverted>
+                    <Container>
+                        <Link to="/">
+                            <Menu.Item header>Home</Menu.Item>
+                        </Link>
+                        <Link to="/found">
+                            <Menu.Item header>Found</Menu.Item>
+                        </Link>
+                        <Link to="/">
+                            <Menu.Item header>Lost</Menu.Item>
+                        </Link>
+                        {authenticated ? (
+                            <Menu.Menu position="right">
 
-        {this.props.children}
+                                <Link to="/profile">
+                                    {/*<Dropdown text='Profile' options={options} simple item/>*/}
+                                    <Menu.Item header>Profile</Menu.Item>
+                                </Link>
 
-        <Segment
-          inverted
-          vertical
-          style={{ margin: "5em 0em 0em", padding: "5em 0em" }}
-        >
-          <Container textAlign="center">
-            <Grid divided inverted stackable>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 1" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 2" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 3" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={7}>
-                <Header inverted as="h4" content="Footer Header" />
-                <p>
-                  Extra space for a call to action inside the footer that could
-                  help re-engage users.
-                </p>
-              </Grid.Column>
-            </Grid>
+                                <Menu.Item>
+                                    <Input icon='search' placeholder='Search...'/>
+                                </Menu.Item>
+                                <Menu.Item header onClick={() => this.props.logout()}>
+                                    Logout
+                                </Menu.Item>
+                            </Menu.Menu>
 
-            <Divider inverted section />
-            <Image centered size="mini" src="/logo.png" />
-            <List horizontal inverted divided link size="small">
-              <List.Item as="a" href="#">
-                Site Map
-              </List.Item>
-              <List.Item as="a" href="#">
-                Contact Us
-              </List.Item>
-              <List.Item as="a" href="#">
-                Terms and Conditions
-              </List.Item>
-              <List.Item as="a" href="#">
-                Privacy Policy
-              </List.Item>
-            </List>
-          </Container>
-        </Segment>
-      </div>
-    );
-  }
+                        ) : (
+                            <React.Fragment>
+                                <Link to="/login">
+                                    <Menu.Item header>Login</Menu.Item>
+                                </Link>
+                                <Link to="/signup">
+                                    <Menu.Item header>Signup</Menu.Item>
+                                </Link>
+                            </React.Fragment>
+                        )}
+                    </Container>
+                </Menu>
+
+                {this.props.children}
+
+                <Segment
+                    inverted
+                    vertical
+                    style={{margin: "5em 0em 0em", padding: "5em 0em"}}
+                >
+                    <Container textAlign="center">
+                        <Grid divided inverted stackable>
+                            <Grid.Column width={3}>
+                                <Header inverted as="h4" content="Group 1"/>
+                                <List link inverted>
+                                    <List.Item as="a">Link One</List.Item>
+                                    <List.Item as="a">Link Two</List.Item>
+                                    <List.Item as="a">Link Three</List.Item>
+                                    <List.Item as="a">Link Four</List.Item>
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={3}>
+                                <Header inverted as="h4" content="Group 2"/>
+                                <List link inverted>
+                                    <List.Item as="a">Link One</List.Item>
+                                    <List.Item as="a">Link Two</List.Item>
+                                    <List.Item as="a">Link Three</List.Item>
+                                    <List.Item as="a">Link Four</List.Item>
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={3}>
+                                <Header inverted as="h4" content="Group 3"/>
+                                <List link inverted>
+                                    <List.Item as="a">Link One</List.Item>
+                                    <List.Item as="a">Link Two</List.Item>
+                                    <List.Item as="a">Link Three</List.Item>
+                                    <List.Item as="a">Link Four</List.Item>
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={7}>
+                                <Header inverted as="h4" content="Footer Header"/>
+                                <p>
+                                    Extra space for a call to action inside the footer that could
+                                    help re-engage users.
+                                </p>
+                            </Grid.Column>
+                        </Grid>
+
+                        <Divider inverted section/>
+                        <Image centered size="mini" src="/logo.png"/>
+                        <List horizontal inverted divided link size="small">
+                            <List.Item as="a" href="#">
+                                Site Map
+                            </List.Item>
+                            <List.Item as="a" href="#">
+                                Contact Us
+                            </List.Item>
+                            <List.Item as="a" href="#">
+                                Terms and Conditions
+                            </List.Item>
+                            <List.Item as="a" href="#">
+                                Privacy Policy
+                            </List.Item>
+                        </List>
+                    </Container>
+                </Segment>
+            </div>
+        );
+    }
 }
 
 const mapStateToProps = state => {
-  return {
-    authenticated: state.auth.token !== null
-  };
+    return {
+        authenticated: state.auth.token !== null
+    };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    logout: () => dispatch(logout())
-  };
+    return {
+        logout: () => dispatch(logout())
+    };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CustomLayout)
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(CustomLayout)
 );
