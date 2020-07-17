@@ -1,46 +1,75 @@
 import React from "react";
+import axios from 'axios';
 
 import {Button, Icon, Image, Item, Label, Container, Grid, Segment, Menu, Input} from 'semantic-ui-react'
+import {postListURL, URL} from "../store/constants";
 
 class HomepageLayout extends React.Component {
-    state = {activeItem: 'inbox'}
+    state = {
+        activeItem: 'all',
+        posts: [],
+        all_count: 0,
+        lost_count: 0,
+        found_count: 0
+    };
 
     componentDidMount() {
+        this.loadPost()
     }
 
+    loadPost = () => {
+        const {activeItem} = this.state;
+        axios.post(postListURL, {'type': activeItem}).then(res => {
+            this.setState({
+                posts: res.data.posts,
+                all_count: res.data.all_count,
+                lost_count: res.data.lost_count,
+                found_count: res.data.found_count
+            })
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    };
 
-    handleItemClick = (e, {name}) => this.setState({activeItem: name})
+
+    handleItemClick = (e, {name}) => {
+        setTimeout(() => {
+            this.setState({activeItem: name});
+            this.loadPost()
+        }, 1);
+    };
 
     render() {
-        const {activeItem} = this.state
+        const {activeItem, posts, all_count, lost_count, found_count} = this.state
         return (
             <Container>
                 <Grid>
                     <Grid.Column width={4}>
                         <Menu vertical>
-                          <Menu.Item
-                                name='spam'
-                                active={activeItem === 'spam'}
+                            <Menu.Item
+                                name='all'
+                                active={activeItem === 'all'}
                                 onClick={this.handleItemClick}
                             >
-                                <Label>51</Label>
+                                <Label>{all_count}</Label>
                                 All
                             </Menu.Item>
                             <Menu.Item
-                                name='inbox'
-                                active={activeItem === 'inbox'}
+                                name='lost'
+                                active={activeItem === 'lost'}
                                 onClick={this.handleItemClick}
                             >
-                                <Label color='teal'>1</Label>
+                                <Label color='teal'>{lost_count}</Label>
                                 Lost
                             </Menu.Item>
 
                             <Menu.Item
-                                name='spam'
-                                active={activeItem === 'spam'}
+                                name='found'
+                                active={activeItem === 'found'}
                                 onClick={this.handleItemClick}
                             >
-                                <Label>51</Label>
+                                <Label>{found_count}</Label>
                                 Found
                             </Menu.Item>
 
@@ -48,34 +77,27 @@ class HomepageLayout extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Item.Group divided>
-                            <Item>
-                                <Item.Image src='/images/wireframe/image.png'/>
+                            {
+                                posts.map(post => {
+                                    return (
+                                        <Item>
+                                            <Item.Image src={`${URL}${post.image}`}/>
 
-                                <Item.Content>
-                                    <Item.Header as='a'>12 Years a Slave</Item.Header>
-                                    <Item.Meta>
-                                        <span className='cinema'>Union Square 14</span>
-                                    </Item.Meta>
-                                    <Item.Description>Cool item</Item.Description>
-                                    <Item.Extra>
-                                        <Label>LOST</Label>
-                                    </Item.Extra>
-                                </Item.Content>
-                            </Item>
-                            <Item>
-                                <Item.Image src='/images/wireframe/image.png'/>
+                                            <Item.Content>
+                                                <Item.Header as='a'>{post.name}</Item.Header>
+                                                <Item.Meta>
+                                                    <span className='cinema'>{post.timestamp}</span>
+                                                </Item.Meta>
+                                                <Item.Description>{post.description}</Item.Description>
+                                                <Item.Extra>
+                                                    <Label>{post.type}</Label>
+                                                </Item.Extra>
+                                            </Item.Content>
+                                        </Item>
+                                    )
+                                })
+                            }
 
-                                <Item.Content>
-                                    <Item.Header as='a'>12 Years a Slave</Item.Header>
-                                    <Item.Meta>
-                                        <span className='cinema'>Union Square 14</span>
-                                    </Item.Meta>
-                                    <Item.Description>Cool item</Item.Description>
-                                    <Item.Extra>
-                                        <Label>FOUND</Label>
-                                    </Item.Extra>
-                                </Item.Content>
-                            </Item>
                         </Item.Group>
                     </Grid.Column>
 

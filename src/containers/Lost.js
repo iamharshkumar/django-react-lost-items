@@ -4,7 +4,7 @@ import {Button, Checkbox, Form, TextArea} from 'semantic-ui-react'
 import axios from "axios";
 import {postListURL, postLostURL} from "../store/constants";
 
-class Found extends React.Component {
+class Lost extends React.Component {
     state = {
         name: '',
         description: '',
@@ -20,7 +20,7 @@ class Found extends React.Component {
         form_data.append('name', name);
         form_data.append('description', description);
         form_data.append('image', image, image.name);
-        form_data.append('type', 'found');
+        form_data.append('type', 'lost');
         let headers = {
             Authorization: `Token ${localStorage.getItem('token')}`
         };
@@ -67,4 +67,4 @@ class Found extends React.Component {
     }
 }
 
-export default Found
+export default Lost

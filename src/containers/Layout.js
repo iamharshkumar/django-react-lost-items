@@ -28,7 +28,7 @@ class CustomLayout extends React.Component {
                         <Link to="/found">
                             <Menu.Item header>Found</Menu.Item>
                         </Link>
-                        <Link to="/">
+                        <Link to="/lost">
                             <Menu.Item header>Lost</Menu.Item>
                         </Link>
                         {authenticated ? (
