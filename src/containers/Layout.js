@@ -25,15 +25,14 @@ class CustomLayout extends React.Component {
                         <Link to="/">
                             <Menu.Item header>Home</Menu.Item>
                         </Link>
-                        <Link to="/found">
-                            <Menu.Item header>Found</Menu.Item>
-                        </Link>
-                        <Link to="/lost">
-                            <Menu.Item header>Lost</Menu.Item>
-                        </Link>
                         {authenticated ? (
                             <Menu.Menu position="right">
-
+                                <Link to="/found">
+                                    <Menu.Item>Found</Menu.Item>
+                                </Link>
+                                <Link to="/lost">
+                                    <Menu.Item>Lost</Menu.Item>
+                                </Link>
                                 <Link to="/profile">
                                     {/*<Dropdown text='Profile' options={options} simple item/>*/}
                                     <Menu.Item header>Profile</Menu.Item>

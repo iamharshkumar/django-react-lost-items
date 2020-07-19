@@ -3,12 +3,14 @@ import {Container} from "semantic-ui-react";
 import {Button, Checkbox, Form, TextArea} from 'semantic-ui-react'
 import axios from "axios";
 import {postListURL, postLostURL} from "../store/constants";
+import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
 
 class Found extends React.Component {
     state = {
         name: '',
         description: '',
-        image: ''
+        image: '',
+        loader: false
     };
 
     componentDidMount() {
@@ -24,10 +26,10 @@ class Found extends React.Component {
         let headers = {
             Authorization: `Token ${localStorage.getItem('token')}`
         };
-
+        this.setState({loader: true})
         axios.post(postLostURL, form_data, {headers: headers}).then(res => {
             console.log(res.data)
-            // this.setState({posts: res.data})
+            this.setState({loader: false})
         })
             .catch(err => {
                 console.log(err)
@@ -45,6 +47,12 @@ class Found extends React.Component {
     };
 
     render() {
+        const {loader} = this.state;
+        if (loader) {
+            return (
+                <Loader active inline='centered'/>
+            )
+        }
         return (
             <Container style={{'width': '40%'}}>
                 <Form onSubmit={this.submit}>

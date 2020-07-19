@@ -3,12 +3,17 @@ import {Container} from "semantic-ui-react";
 import {Button, Checkbox, Form, TextArea} from 'semantic-ui-react'
 import axios from "axios";
 import {postListURL, postLostURL} from "../store/constants";
+import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
+import Message from "semantic-ui-react/dist/commonjs/collections/Message";
 
 class Lost extends React.Component {
     state = {
         name: '',
         description: '',
-        image: ''
+        image: '',
+        loader: false,
+        message:'',
+        error:''
     };
 
     componentDidMount() {
@@ -24,13 +29,14 @@ class Lost extends React.Component {
         let headers = {
             Authorization: `Token ${localStorage.getItem('token')}`
         };
-
+        this.setState({loader: true})
         axios.post(postLostURL, form_data, {headers: headers}).then(res => {
             console.log(res.data)
-            // this.setState({posts: res.data})
+            this.setState({loader: false, message:res.data.message})
         })
             .catch(err => {
                 console.log(err)
+                this.setState({loader: false, error:err.data.message})
             })
     };
 
@@ -45,8 +51,20 @@ class Lost extends React.Component {
     };
 
     render() {
+        const {loader, error, message} = this.state;
+        if (loader) {
+            return (
+                <Loader active inline='centered'/>
+            )
+        }
         return (
             <Container style={{'width': '40%'}}>
+                {
+                    error ? <Message color='red'>Failed to create post</Message> : ''
+                }
+                {
+                    message ? <Message color='green'>Post create successful wait for admin to accept your Post</Message> : ''
+                }
                 <Form onSubmit={this.submit}>
                     <Form.Field>
                         <label>Title</label>

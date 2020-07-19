@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import {Button, Icon, Image, Item, Label, Container, Grid, Segment, Menu, Input} from 'semantic-ui-react'
 import {postListURL, URL} from "../store/constants";
+import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
 
 class HomepageLayout extends React.Component {
     state = {
@@ -10,7 +11,8 @@ class HomepageLayout extends React.Component {
         posts: [],
         all_count: 0,
         lost_count: 0,
-        found_count: 0
+        found_count: 0,
+        loader: false
     };
 
     componentDidMount() {
@@ -19,12 +21,14 @@ class HomepageLayout extends React.Component {
 
     loadPost = () => {
         const {activeItem} = this.state;
+        this.setState({loader: true})
         axios.post(postListURL, {'type': activeItem}).then(res => {
             this.setState({
                 posts: res.data.posts,
                 all_count: res.data.all_count,
                 lost_count: res.data.lost_count,
-                found_count: res.data.found_count
+                found_count: res.data.found_count,
+                loader: false
             })
         })
             .catch(err => {
@@ -41,7 +45,12 @@ class HomepageLayout extends React.Component {
     };
 
     render() {
-        const {activeItem, posts, all_count, lost_count, found_count} = this.state
+        const {activeItem, posts, all_count, lost_count, found_count, loader} = this.state;
+        if (loader) {
+            return (
+                <Loader active inline='centered'/>
+            )
+        }
         return (
             <Container>
                 <Grid>
