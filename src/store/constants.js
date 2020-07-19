@@ -8,3 +8,5 @@ export const endpoint =`${URL}${apiURL}`;
 
 export const postListURL =  `${endpoint}/post-list`;
 export const postLostURL =  `${endpoint}/post-create`;
+export const userProfileURL =  `${endpoint}/userprofile`;
+export const userPostsURL =  `${endpoint}/userposts`;

@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, DestroyAPIView, \
     RetrieveUpdateDestroyAPIView
-from .serializers import PostSerializer
-from .models import Post
+from .serializers import PostSerializer, UserProfileSerializer
+from .models import Post, UserProfile
 
 
 # Create your views here.
@@ -61,4 +61,34 @@ class PostCreate(APIView):
             post = Post.objects.create(user=user, name=name, description=description, image=image, type=type)
             return Response({'message': 'Post create successfully'}, status=HTTP_201_CREATED)
 
+        return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
+
+
+class UserProfileView(APIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request):
+        user = User.objects.get(username=request.user)
+        q = UserProfile.objects.get(user=user)
+        serializer = self.serializer_class(q, many=False).data
+        return Response(serializer, status=HTTP_200_OK)
+
+
+class UserPostsView(APIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request):
+        user = User.objects.get(username=request.user)
+        q = request.data.get('type')
+
+        if q == 'Active Post':
+            posts = Post.objects.filter(user=user, active=True).order_by('-timestamp')
+            serializer = self.serializer_class(posts, many=True).data
+            return Response(serializer, status=HTTP_200_OK)
+        if q == 'Pending Post':
+            posts = Post.objects.filter(user=user, active=False).order_by('-timestamp')
+            serializer = self.serializer_class(posts, many=True).data
+            return Response(serializer, status=HTTP_200_OK)
         return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)

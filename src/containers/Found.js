@@ -4,13 +4,16 @@ import {Button, Checkbox, Form, TextArea} from 'semantic-ui-react'
 import axios from "axios";
 import {postListURL, postLostURL} from "../store/constants";
 import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
+import Message from "semantic-ui-react/dist/commonjs/collections/Message";
 
 class Found extends React.Component {
     state = {
         name: '',
         description: '',
         image: '',
-        loader: false
+        loader: false,
+        message: '',
+        error: ''
     };
 
     componentDidMount() {
@@ -29,10 +32,11 @@ class Found extends React.Component {
         this.setState({loader: true})
         axios.post(postLostURL, form_data, {headers: headers}).then(res => {
             console.log(res.data)
-            this.setState({loader: false})
+            this.setState({loader: false, message: res.data.message})
         })
             .catch(err => {
                 console.log(err)
+                this.setState({loader: false, error: err.data.message})
             })
     };
 
@@ -47,7 +51,7 @@ class Found extends React.Component {
     };
 
     render() {
-        const {loader} = this.state;
+        const {loader, error, message} = this.state;
         if (loader) {
             return (
                 <Loader active inline='centered'/>
@@ -55,6 +59,13 @@ class Found extends React.Component {
         }
         return (
             <Container style={{'width': '40%'}}>
+                {
+                    error ? <Message color='red'>Failed to create post</Message> : ''
+                }
+                {
+                    message ?
+                        <Message color='green'>Post create successful wait for admin to accept your Post</Message> : ''
+                }
                 <Form onSubmit={this.submit}>
                     <Form.Field>
                         <label>Title</label>

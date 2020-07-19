@@ -2,28 +2,67 @@ import React from 'react';
 import {Container, Item, Label} from "semantic-ui-react";
 import {Grid, Menu, Segment, Button, Checkbox, Form} from 'semantic-ui-react'
 import axios from "axios";
-import {postListURL} from "../store/constants";
+import {postListURL, userPostsURL, userProfileURL} from "../store/constants";
+import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
+import {URL} from "../store/constants";
 
 class Profile extends React.Component {
     state = {
         activeItem: 'Profile',
-        posts: []
+        posts: [],
+        loader: false,
+        userProfile: {}
     };
 
     componentDidMount() {
-        axios.get(postListURL).then(res => {
-            this.setState({posts: res.data})
+        this.loadUserProfile()
+    }
+
+    loadUserPosts = () => {
+        const {activeItem} = this.state;
+        let headers = {
+            Authorization: `Token ${localStorage.getItem('token')}`
+        };
+
+        this.setState({loader: true})
+        axios.post(userPostsURL, {'type': activeItem}, {headers: headers}).then(res => {
+            this.setState({loader: false, posts: res.data})
         })
             .catch(err => {
                 console.log(err)
+                this.setState({loader: false})
             })
     }
 
-    handleItemClick = (e, {name}) => this.setState({activeItem: name})
+    loadUserProfile = () => {
+        let headers = {
+            Authorization: `Token ${localStorage.getItem('token')}`
+        };
+
+        this.setState({loader: true})
+        axios.get(userProfileURL, {headers: headers}).then(res => {
+            this.setState({loader: false, userProfile: res.data})
+        })
+            .catch(err => {
+                console.log(err)
+                this.setState({loader: false})
+            })
+    };
+
+    handleItemClick = (e, {name}) => {
+        setTimeout(() => {
+            this.setState({activeItem: name});
+            this.loadUserPosts()
+        }, 1);
+    };
 
     render() {
-        const {activeItem, posts} = this.state
-
+        const {activeItem, posts, loader, userProfile} = this.state
+        if (loader) {
+            return (
+                <Loader active inline='centered'/>
+            )
+        }
         return (
             <Container>
                 <Grid>
@@ -52,15 +91,15 @@ class Profile extends React.Component {
                             activeItem === 'Profile' ? <Form>
                                 <Form.Field>
                                     <label> Username</label>
-                                    <input/>
+                                    <input value={userProfile.username}/>
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Email</label>
-                                    <input/>
+                                    <input value={userProfile.email}/>
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Phone number</label>
-                                    <input/>
+                                    <input value={userProfile.contact}/>
                                 </Form.Field>
                                 <Button type='submit'>Save</Button>
                             </Form> : null
@@ -73,7 +112,7 @@ class Profile extends React.Component {
                                             posts.map(post => {
                                                 return (
                                                     <Item>
-                                                        <Item.Image src={`${post.image}`}/>
+                                                        <Item.Image src={`${URL}${post.image}`}/>
 
                                                         <Item.Content>
                                                             <Item.Header as='a'>{post.name}</Item.Header>
@@ -103,7 +142,7 @@ class Profile extends React.Component {
                                             posts.map(post => {
                                                 return (
                                                     <Item>
-                                                        <Item.Image src={`${post.image}`}/>
+                                                        <Item.Image src={`${URL}${post.image}`}/>
 
                                                         <Item.Content>
                                                             <Item.Header as='a'>{post.name}</Item.Header>
