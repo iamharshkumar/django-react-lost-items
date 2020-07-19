@@ -2,11 +2,10 @@ import React from 'react';
 import {Container} from "semantic-ui-react";
 import Image from "semantic-ui-react/dist/commonjs/elements/Image";
 import axios from 'axios';
-import {postDetailURL} from "../store/constants";
+import {postContactURL, postDetailURL} from "../store/constants";
 import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
 import Header from "semantic-ui-react/dist/commonjs/elements/Header";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import {authLogin, logout} from "../store/actions/auth";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 
@@ -14,7 +13,9 @@ class PostDetail extends React.Component {
     state = {
         post: {},
         loader: false,
-        active: false
+        active: false,
+        contact: '',
+        email: ''
     };
 
     componentDidMount() {
@@ -31,9 +32,23 @@ class PostDetail extends React.Component {
             })
     }
 
+    showContact = () => {
+        const {id} = this.props.match.params;
+        let headers = {
+            Authorization: `Token ${localStorage.getItem('token')}`
+        };
+        axios.post(postContactURL, {'post_id': id}, {headers: headers}).then(res => {
+            console.log(res.data);
+            this.setState({contact: res.data.contact, email: res.data.email})
+        }).catch(err => [
+            console.log(err)
+        ])
+    };
+
     handleClick = () => {
         const {active} = this.state;
         if (this.props.authenticated) {
+            this.showContact();
             if (active === false) {
                 this.setState({active: true})
             } else {
@@ -45,7 +60,7 @@ class PostDetail extends React.Component {
     };
 
     render() {
-        const {post, loader, active} = this.state;
+        const {post, loader, active, contact, email} = this.state;
         if (loader) {
             return (
                 <Loader active inline='centered'/>
@@ -56,10 +71,16 @@ class PostDetail extends React.Component {
                 <Header as='h1'>{post.name}</Header>
                 <Image src={`${post.image}`} size='big' centered/>
                 <Header as='h3'>Description</Header>
-                <p>{post.description}</p>
-                <Button onClick={this.handleClick} color='green'>Show contact</Button>
+                <p style={{'fontSize':'17px'}}>{post.description}</p>
+                <Button onClick={this.handleClick} color='green'>Show contact details</Button>
                 {
-                    active ? <Header class='h5'>Contact no. : 9671444861</Header> : ''
+                    active ?
+                        <div>
+                            <Header></Header>
+                            <Header class='h5'>Contact no. : {contact}</Header>
+                            <Header class='h5'>Email : {email}</Header>
+                        </div>
+                        : ''
                 }
             </Container>
         )

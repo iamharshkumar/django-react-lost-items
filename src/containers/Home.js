@@ -95,14 +95,19 @@ class HomepageLayout extends React.Component {
 
                                             <Item.Content>
                                                 <Link to={`/post/${post.id}`}>
-                                                    <Item.Header style={{'fontSize':'18px'}}  as='a'>{post.name}</Item.Header>
+                                                    <Item.Header style={{'fontSize': '18px'}}
+                                                                 as='a'>{post.name}</Item.Header>
                                                 </Link>
                                                 <Item.Meta>
                                                     <span className='cinema'>{post.timestamp}</span>
                                                 </Item.Meta>
                                                 <Item.Description>{post.description}</Item.Description>
                                                 <Item.Extra>
-                                                    <Label>{post.type}</Label>
+                                                    {
+                                                        post.type === 'lost' ?
+                                                            <Label color='red'>{post.type}</Label> :
+                                                            <Label color='green'>{post.type}</Label>
+                                                    }
                                                 </Item.Extra>
                                             </Item.Content>
                                         </Item>

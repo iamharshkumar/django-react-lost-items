@@ -93,3 +93,14 @@ class UserPostsView(APIView):
             return Response(serializer, status=HTTP_200_OK)
         return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
 
+
+class PostContactView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request):
+        post_id = request.data.get('post_id')
+        post = Post.objects.get(id=post_id)
+        user = UserProfile.objects.get(user=post.user)
+        contact = user.contact
+        email = user.user.email
+        return Response({'contact': contact, 'email': email}, status=HTTP_200_OK)
