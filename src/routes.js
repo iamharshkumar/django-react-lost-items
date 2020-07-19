@@ -8,6 +8,7 @@ import HomepageLayout from "./containers/Home";
 import Found from "./containers/Found";
 import Profile from "./containers/Profile";
 import Lost from "./containers/Lost";
+import PostDetail from "./containers/PostDetail";
 
 const BaseRouter = () => (
   <Hoc>
@@ -16,6 +17,7 @@ const BaseRouter = () => (
     <Route path="/found" component={Found} />
     <Route path="/profile" component={Profile} />
     <Route path="/lost" component={Lost} />
+    <Route path="/post/:id" component={PostDetail} />
     <Route exact path="/" component={HomepageLayout} />
   </Hoc>
 );

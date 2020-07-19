@@ -92,3 +92,4 @@ class UserPostsView(APIView):
             serializer = self.serializer_class(posts, many=True).data
             return Response(serializer, status=HTTP_200_OK)
         return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
+

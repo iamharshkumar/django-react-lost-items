@@ -4,6 +4,7 @@ import axios from 'axios';
 import {Button, Icon, Image, Item, Label, Container, Grid, Segment, Menu, Input} from 'semantic-ui-react'
 import {postListURL, URL} from "../store/constants";
 import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
+import {Link} from "react-router-dom";
 
 class HomepageLayout extends React.Component {
     state = {
@@ -93,7 +94,9 @@ class HomepageLayout extends React.Component {
                                             <Item.Image src={`${URL}${post.image}`}/>
 
                                             <Item.Content>
-                                                <Item.Header as='a'>{post.name}</Item.Header>
+                                                <Link to={`/post/${post.id}`}>
+                                                    <Item.Header style={{'fontSize':'18px'}}  as='a'>{post.name}</Item.Header>
+                                                </Link>
                                                 <Item.Meta>
                                                     <span className='cinema'>{post.timestamp}</span>
                                                 </Item.Meta>
