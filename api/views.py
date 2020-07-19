@@ -74,6 +74,19 @@ class UserProfileView(APIView):
         serializer = self.serializer_class(q, many=False).data
         return Response(serializer, status=HTTP_200_OK)
 
+    def post(self, request):
+        user = User.objects.get(username=request.user)
+        email = request.data.get('email')
+        contact = request.data.get('contact')
+
+        user = User.objects.get(username=request.user)
+        userProfile = UserProfile.objects.get(user=user)
+        user.email = email
+        userProfile.contact = contact
+        user.save()
+        userProfile.save()
+        return Response({'message': 'Profile update successfully'}, status=HTTP_200_OK)
+
 
 class UserPostsView(APIView):
     serializer_class = PostSerializer

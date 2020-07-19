@@ -1,5 +1,6 @@
 import React from "react";
 import axios from 'axios';
+import Moment from "moment";
 
 import {Button, Icon, Image, Item, Label, Container, Grid, Segment, Menu, Input} from 'semantic-ui-react'
 import {postListURL, URL} from "../store/constants";
@@ -99,8 +100,11 @@ class HomepageLayout extends React.Component {
                                                                  as='a'>{post.name}</Item.Header>
                                                 </Link>
                                                 <Item.Meta>
-                                                    <span className='cinema'>{post.timestamp}</span>
+                                                    <span className='cinema'>{Moment(post.timestamp).format('LL')}
+                                                                </span>
                                                 </Item.Meta>
+                                                <p style={{'fontSize': '14px'}}><i><b>Post by</b></i>: {post.user}</p>
+
                                                 <Item.Description>{post.description}</Item.Description>
                                                 <Item.Extra>
                                                     {

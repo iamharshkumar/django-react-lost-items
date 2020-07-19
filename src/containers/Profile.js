@@ -5,13 +5,19 @@ import axios from "axios";
 import {postListURL, userPostsURL, userProfileURL} from "../store/constants";
 import Loader from "semantic-ui-react/dist/commonjs/elements/Loader";
 import {URL} from "../store/constants";
+import Moment from "moment";
+import Message from "semantic-ui-react/dist/commonjs/collections/Message";
 
 class Profile extends React.Component {
     state = {
         activeItem: 'Profile',
         posts: [],
         loader: false,
-        userProfile: {}
+        userProfile: {},
+        email: '',
+        contact: '',
+        message: '',
+        error: ''
     };
 
     componentDidMount() {
@@ -41,7 +47,7 @@ class Profile extends React.Component {
 
         this.setState({loader: true})
         axios.get(userProfileURL, {headers: headers}).then(res => {
-            this.setState({loader: false, userProfile: res.data})
+            this.setState({loader: false, userProfile: res.data, email: res.data.email, contact: res.data.contact})
         })
             .catch(err => {
                 console.log(err)
@@ -56,8 +62,29 @@ class Profile extends React.Component {
         }, 1);
     };
 
+    handleUserInput = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+        console.log(e.target.value)
+    };
+
+    handleSubmit = () => {
+        const {email, contact} = this.state;
+        let headers = {
+            Authorization: `Token ${localStorage.getItem('token')}`
+        };
+
+        this.setState({loader: true})
+        axios.post(userProfileURL, {'email': email, 'contact': contact}, {headers: headers}).then(res => {
+            this.setState({loader: false, message: res.data.message})
+        })
+            .catch(err => {
+                console.log(err)
+                this.setState({loader: false, error: err})
+            })
+    };
+
     render() {
-        const {activeItem, posts, loader, userProfile} = this.state
+        const {activeItem, posts, loader, userProfile, email, contact, error, message} = this.state
         if (loader) {
             return (
                 <Loader active inline='centered'/>
@@ -65,6 +92,7 @@ class Profile extends React.Component {
         }
         return (
             <Container>
+
                 <Grid>
                     <Grid.Column width={4}>
                         <Menu fluid vertical tabular>
@@ -86,27 +114,34 @@ class Profile extends React.Component {
                         </Menu>
                     </Grid.Column>
 
-                    <Grid.Column stretched width={8}>
+                    <Grid.Column width={8}>
+                        {
+                            error ? <Message color='red'>Failed to update Profile</Message> : ''
+                        }
+                        {
+                            message ?
+                                <Message color='green'>Profile update successfully</Message> : ''
+                        }
                         {
                             activeItem === 'Profile' ? <Form>
                                 <Form.Field>
                                     <label> Username</label>
-                                    <input value={userProfile.username}/>
+                                    <span>{userProfile.username}</span>
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Email</label>
-                                    <input value={userProfile.email}/>
+                                    <input name='email' onChange={this.handleUserInput} value={email}/>
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Phone number</label>
-                                    <input value={userProfile.contact}/>
+                                    <input name='contact' onChange={this.handleUserInput} value={contact}/>
                                 </Form.Field>
-                                <Button type='submit'>Save</Button>
+                                <Button color="green" onClick={this.handleSubmit} type='submit'>Save</Button>
                             </Form> : null
                         }
                         {
                             activeItem === 'Pending Post' ? <Grid>
-                                <Grid.Column width={8}>
+                                <Grid.Column width={10}>
                                     <Item.Group divided>
                                         {
                                             posts.map(post => {
@@ -117,7 +152,8 @@ class Profile extends React.Component {
                                                         <Item.Content>
                                                             <Item.Header as='a'>{post.name}</Item.Header>
                                                             <Item.Meta>
-                                                                <span className='cinema'>{post.timestamp}</span>
+                                                                <span
+                                                                    className='cinema'>{Moment(post.timestamp).format('LL')}</span>
                                                             </Item.Meta>
                                                             <Item.Description>{post.description}</Item.Description>
                                                             <Item.Extra>
@@ -136,7 +172,7 @@ class Profile extends React.Component {
                         }
                         {
                             activeItem === 'Active Post' ? <Grid>
-                                <Grid.Column width={8}>
+                                <Grid.Column width={10}>
                                     <Item.Group divided>
                                         {
                                             posts.map(post => {
@@ -147,7 +183,8 @@ class Profile extends React.Component {
                                                         <Item.Content>
                                                             <Item.Header as='a'>{post.name}</Item.Header>
                                                             <Item.Meta>
-                                                                <span className='cinema'>{post.timestamp}</span>
+                                                                <span
+                                                                    className='cinema'>{Moment(post.timestamp).format('LL')}</span>
                                                             </Item.Meta>
                                                             <Item.Description>{post.description}</Item.Description>
                                                             <Item.Extra>

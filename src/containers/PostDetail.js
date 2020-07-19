@@ -8,6 +8,7 @@ import Header from "semantic-ui-react/dist/commonjs/elements/Header";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
+import Moment from "moment";
 
 class PostDetail extends React.Component {
     state = {
@@ -71,7 +72,9 @@ class PostDetail extends React.Component {
                 <Header as='h1'>{post.name}</Header>
                 <Image src={`${post.image}`} size='big' centered/>
                 <Header as='h3'>Description</Header>
-                <p style={{'fontSize':'17px'}}>{post.description}</p>
+                <p style={{'fontSize': '17px'}}>{post.description}</p>
+                <p style={{'fontSize': '17px'}}><i><b>Post by</b></i> :{post.user}</p>
+                <p style={{'fontSize': '17px'}}><i><b>Post time</b></i> :{Moment(post.timestamp).format('LL')}</p>
                 <Button onClick={this.handleClick} color='green'>Show contact details</Button>
                 {
                     active ?
