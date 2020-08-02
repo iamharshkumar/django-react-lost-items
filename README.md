@@ -1,4 +1,5 @@
 ## LOST & FOUND REACTJS & DJANGO
+<img src="./thumbnail.png">
 ## Backend development workflow
 
 ```json
