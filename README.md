@@ -1,6 +1,7 @@
 ## LOST & FOUND REACTJS & DJANGO
-## Backend development workflow
+<img src="./thumbnail.png">
 
+## Backend development workflow
 ```json
 virtualenv env
 source env/bin/activate
