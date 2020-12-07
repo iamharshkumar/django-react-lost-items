@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK
 from rest_framework.response import Response
@@ -17,6 +17,7 @@ from .models import Post, UserProfile
 
 
 class PostView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, ]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
@@ -24,6 +25,7 @@ class PostView(RetrieveUpdateDestroyAPIView):
 class PostListView(APIView):
     serializer_class = PostSerializer
 
+    @swagger_auto_schema(responses={200: PostSerializer(many=True)})
     def post(self, request):
         q = request.data.get('type')
         post = []
@@ -50,6 +52,7 @@ class PostListView(APIView):
 class PostCreate(APIView):
     permission_classes = [IsAuthenticated, ]
 
+    @swagger_auto_schema(request_body=PostSerializer, responses={200: PostSerializer(many=False)})
     def post(self, request):
         user = User.objects.get(username=request.user)
         name = request.data.get('name')
