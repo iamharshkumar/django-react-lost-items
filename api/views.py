@@ -35,10 +35,9 @@ class PostListView(APIView):
 
         if q == 'all':
             post = Post.objects.filter(active=True).order_by('-timestamp')
-        if q == 'lost':
-            post = Post.objects.filter(type='lost', active=True).order_by('-timestamp')
-        if q == 'found':
-            post = Post.objects.filter(type='found', active=True).order_by('-timestamp')
+        else:
+            post=Post.objects.filter(type=q, active=True).order_by('-timestamp')
+            
         all_count = Post.objects.filter(active=True).count()
         lost_count = Post.objects.filter(type='lost', active=True).count()
         found_count = Post.objects.filter(type='found', active=True).count()
@@ -98,16 +97,11 @@ class UserPostsView(APIView):
     def post(self, request):
         user = User.objects.get(username=request.user)
         q = request.data.get('type')
-
-        if q == 'Active Post':
-            posts = Post.objects.filter(user=user, active=True).order_by('-timestamp')
-            serializer = self.serializer_class(posts, many=True).data
-            return Response(serializer, status=HTTP_200_OK)
-        if q == 'Pending Post':
-            posts = Post.objects.filter(user=user, active=False).order_by('-timestamp')
-            serializer = self.serializer_class(posts, many=True).data
-            return Response(serializer, status=HTTP_200_OK)
-        return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
+        
+        posts = Post.objects.filter(user=user, active=(q == 'Active Post')).order_by('-timestamp')
+        serializer = self.serializer_class(posts, many=True).data
+        return Response(serializer, status=HTTP_200_OK)
+ 
 
 
 class PostContactView(APIView):
