@@ -97,11 +97,10 @@ class UserPostsView(APIView):
     def post(self, request):
         user = User.objects.get(username=request.user)
         q = request.data.get('type')
-
-        if q == 'Active Post' or q == 'Pending Post':
-            posts = Post.objects.filter(user=user, active=False).order_by('-timestamp')
-            serializer = self.serializer_class(posts, many=True).data
-            return Response(serializer, status=HTTP_200_OK)
+        
+        posts = Post.objects.filter(user=user, active=(q == 'Active Post')).order_by('-timestamp')
+        serializer = self.serializer_class(posts, many=True).data
+        return Response(serializer, status=HTTP_200_OK)
             
         return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
 
