@@ -101,8 +101,7 @@ class UserPostsView(APIView):
         posts = Post.objects.filter(user=user, active=(q == 'Active Post')).order_by('-timestamp')
         serializer = self.serializer_class(posts, many=True).data
         return Response(serializer, status=HTTP_200_OK)
-            
-        return Response({'message': 'Something went wrong'}, status=HTTP_400_BAD_REQUEST)
+ 
 
 
 class PostContactView(APIView):
